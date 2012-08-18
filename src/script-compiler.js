@@ -13,6 +13,10 @@ ScriptCompiler.compile = function (source) {
   cursors.push({ list: root_level, index: 0, space: Infinity });
 
   var handleSymbol = function (symbol, cursor) {
+    if (cursor.space !== Infinity) {
+      cursor = cursors.pop();
+    }
+
     switch (symbol) {
     case '&&':
       var prev = cursor.list[cursor.index - 1];
@@ -41,7 +45,7 @@ ScriptCompiler.compile = function (source) {
       ];
       cursor.list[cursor.index++] = level;
       cursors.push(cursor);
-      cursors.push({ list: args, index: 0, space: Infinity });
+      cursors.push({ list: args, index: 0, space: 1 });
       cursors.push({ list: level, index: 1, space: 1, key: true });
       break;
 
