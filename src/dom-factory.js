@@ -34,69 +34,99 @@ DOMFactory.prototype.compile = function (dom, scope, callback) {
     view: function (builder) { return builder(); }
   };
 
-  this.compileTextNodes_(document);
+  this.compileElement_(document);
   this.compileWidgets_(document, sandbox_scope);
 
   callback();
 };
 
 
-DOMFactory.prototype.compileTextNodes_ = function (node) {
-  var document = node.parentWindow.document;
-  // Find all text nodes in the given DOM tree using XPath.
-  var texts = document.evaluate('//text()', document, null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+DOMFactory.prototype.compileElement_ = function (node) {
+  var self = this;
 
-  for (var i = 0, ii = texts.snapshotLength; i < ii; ++i) {
-    var text = texts.snapshotItem(i);
-    var parent = text.parentNode;
-    // Determine whether there are element siblings of the text node.
-    var plain_parent = parent.childNodes.every(function (node) {
-      return (node.nodeType !== node.ELEMENT_NODE);
-    });
-
-    var value = text.nodeValue;
-    var match;
-    while (match = value.match(/\{(.+?)\}([\s\S]*)/)) {
-      // If there is no element sibling to the text node, store its contents
-      // in the `moon:script` attribute of the parent element instead of
-      // creating a placeholder comment pair.
-      if (plain_parent) {
-        parent.setAttribute('moon:script', value);
-        text.nodeValue = value.replace(/\{.+?\}/g, '');
-        break;
-      }
-
-      // Leave the original node contents before the script.
-      text.nodeValue = value.substr(0, value.length - match[0].length);
-      // `querySelector` in jsdom does not return the element for `[moon\\:script]`
-      // if the attribute value is empty.
-      parent.setAttribute('moon:script', '!');
-
-      var frag = document.createDocumentFragment();
-      // Create a placeholder comment pair such as
-      // `<!--{script}--><!--/-->`.
-      var script = match[1];
-      var start_comment = document.createComment('{' + script + '}');
-      var end_comment = document.createComment('/');
-      frag.appendChild(start_comment);
-      frag.appendChild(end_comment);
-
-      // If there is more content after the script, create a new text node
-      // with this content.
-      var remainder = match[2];
-      var remainder_text = document.createTextNode(remainder);
-      if (remainder) {
-        frag.appendChild(remainder_text);
-      }
-
-      // Insert the comment pair and the remainder after the original text node.
-      parent.insertBefore(frag, text.nextSibling);
-
-      // The next loop will be run against the content after the script.
-      text = remainder_text;
-      value = remainder;
+  var compileNode = function (node) {
+    switch (node.nodeType) {
+    case node.ELEMENT_NODE:
+      //self.compileAttributes_(node);
+      compileLevel(node);
+      break;
+    case node.TEXT_NODE:
+      self.compileTextNode_(node);
+      break;
     }
+  };
+  var compileLevel = function (parent) {
+    parent.childNodes.forEach(compileNode);
+  };
+
+  compileLevel(node);
+};
+
+
+//DOMFactory.prototype.compileAttributes_ = function (element) {
+//  var rx = /\{(.+?)\}([\s\S]*)/g;
+//
+//  var attrs = element.attributes;
+//  for (var i = 0, ii = attrs.length; i < ii; ++i) {
+//    var name = attrs[i].name;
+//    var value = element.getAttribute(name);
+//
+//    if (value.match(rx)) {
+//      console.log('"' + value.replace(rx, '" + ($1) + "') + '"');
+//    }
+//  }
+//};
+
+
+DOMFactory.prototype.compileTextNode_ = function (text) {
+  var parent = text.parentNode;
+  var document = parent.ownerDocument;
+  // Determine whether there are element siblings of the text node.
+  var plain_parent = parent.childNodes.every(function (node) {
+    return (node.nodeType !== node.ELEMENT_NODE);
+  });
+
+  var value = text.nodeValue;
+  var match;
+  while (match = value.match(/\{(.+?)\}([\s\S]*)/)) {
+    // If there is no element sibling to the text node, store its contents
+    // in the `moon:script` attribute of the parent element instead of
+    // creating a placeholder comment pair.
+    if (plain_parent) {
+      parent.setAttribute('moon:script', value);
+      text.nodeValue = value.replace(/\{.+?\}/g, '');
+      break;
+    }
+
+    // Leave the original node contents before the script.
+    text.nodeValue = value.substr(0, value.length - match[0].length);
+    // `querySelector` in jsdom does not return the element for `[moon\\:script]`
+    // if the attribute value is empty.
+    parent.setAttribute('moon:script', '!');
+
+    var frag = document.createDocumentFragment();
+    // Create a placeholder comment pair such as
+    // `<!--{script}--><!--/-->`.
+    var script = match[1];
+    var start_comment = document.createComment('{' + script + '}');
+    var end_comment = document.createComment('/');
+    frag.appendChild(start_comment);
+    frag.appendChild(end_comment);
+
+    // If there is more content after the script, create a new text node
+    // with this content.
+    var remainder = match[2];
+    var remainder_text = document.createTextNode(remainder);
+    if (remainder) {
+      frag.appendChild(remainder_text);
+    }
+
+    // Insert the comment pair and the remainder after the original text node.
+    parent.insertBefore(frag, text.nextSibling);
+
+    // The next loop will be run against the content after the script.
+    text = remainder_text;
+    value = remainder;
   }
 };
 
@@ -116,7 +146,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
   };
 
   var compileElement = function (element, scope) {
-    widgets.some(function (widget) {
+    var matched = widgets.some(function (widget) {
       var selector = widget.selector;
       if (matchesSelector.call(element, selector)) {
         var exp;
@@ -129,19 +159,30 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
           });
         }
 
+        // Create a widget.
         var factory = widget.factory;
         var instance = factory(scope, element, exp);
+        // Attach the widget object to the scope to have it receive
+        // future updates.
         scope.$addWidget(instance);
 
+        // Compile template scripts in the widget element.
+        self.compileElement_(element);
+
+        // Widget can create their own sub-scopes.
         var child_scope = instance.scope || scope;
+        // Continue the tree compilation in the correct scope.
         compileLevel(element, child_scope);
 
         return true;
-
-      } else {
-        compileLevel(element, scope);
       }
     });
+
+    // If the element is not a widget root element,
+    // continue the tree compilation in the same scope.
+    if (!matched) {
+      compileLevel(element, scope);
+    }
   };
 
   compileLevel(node, scope);

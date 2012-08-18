@@ -26,7 +26,6 @@ ScriptCompiler.compile = function (source) {
 
     case '.':
       var prev = cursor.list[cursor.index - 1];
-      console.log(prev);
       var level = [
         '(', prev, '.', null, '||"")'
       ];
@@ -110,13 +109,18 @@ ScriptCompiler.compile = function (source) {
 ScriptCompiler.createTokenizer_ = function () {
   var tokenizer = new Tokenizer();
   tokenizer.addRule(/^"([^"]|\\")*"$/, 'string');
-  tokenizer.addRule(/^"([^"]|\\")*$/, 'maybe-string');
+  tokenizer.addRule(/^'([^']|\\')*'$/, 'string');
   tokenizer.addRule(/^(@|\.|&&|\|\||\+|\(|\))$/, 'symbol');
-  tokenizer.addRule(/^(&|\|)$/, 'maybe-symbol');
   tokenizer.addRule(/^([a-z_$]\w*)$/i, 'identifier');
   tokenizer.addRule(/^(\d+(?:\.\d+))$/, 'number');
   tokenizer.addRule(/^(\s)$/, 'whitespace');
   tokenizer.addRule(/^;$/, 'terminator');
+
+  // The tokenizer needs to match any part of a token against
+  // at least one of the `RegExp`s to not throw a `SyntaxError`.
+  tokenizer.addRule(/^"([^"]|\\")*$/, 'maybe-string');
+  tokenizer.addRule(/^'([^']|\\')*$/, 'maybe-string');
+  tokenizer.addRule(/^(&|\|)$/, 'maybe-symbol');
 
   return tokenizer;
 };
@@ -134,7 +138,7 @@ ScriptCompiler.buildScript_ = function (tree) {
     });
   };
   processLevel(tree);
-console.log(js);
+
   return new Function('return (' + js + ');');
 };
 
