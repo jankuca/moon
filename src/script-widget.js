@@ -22,22 +22,22 @@ ScriptWidget.prototype.update = function () {
 
   this.scripts_.forEach(function (item) {
     var html = item.script.call(scope);
-    // Create a DOM tree by setting contents of a detached DIV element.
-    var div = document.createElement('div');
-    div.innerHTML = html;
-
-    // Create a `DocumentFragment` with the DIV's contents.
-    var frag = document.createDocumentFragment();
-    div.childNodes.forEach(function (node) {
-      frag.appendChild(node);
-    });
 
     // If the script handles a whole element, replace all of its contents.
     // Otherwise just the nodes inside the comment node pair.
     if (item.container) {
-      item.container.innerHTML = '';
-      item.container.appendChild(frag);
+      item.container.innerHTML = html;
     } else {
+      // Create a DOM tree by setting contents of a detached DIV element.
+      var div = document.createElement('div');
+      div.innerHTML = html;
+
+      // Create a `DocumentFragment` with the DIV's contents.
+      var frag = document.createDocumentFragment();
+      div.childNodes.forEach(function (node) {
+        frag.appendChild(node);
+      });
+
       var opening = item.opening;
       var node;
       while (node = opening.nextSibling) {
