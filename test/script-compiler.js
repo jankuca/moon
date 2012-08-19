@@ -49,4 +49,9 @@ describe('ScriptCompiler', function () {
     equal(fn, 'this.$$fn.abc((this.def||""))||(this.x||"")');
   });
 
+  it('should compile a function call with an argument with an alternative', function () {
+    var fn = ScriptCompiler.compile('@abc (def || x)');
+    equal(fn, 'this.$$fn.abc(((this.def||"")||(this.x||"")))');
+  });
+
 });

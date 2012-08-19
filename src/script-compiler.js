@@ -13,7 +13,7 @@ ScriptCompiler.compile = function (source) {
   cursors.push({ list: root_level, index: 0, space: Infinity });
 
   var handleSymbol = function (symbol, cursor) {
-    if (cursor.space !== Infinity) {
+    if (cursor.space !== Infinity && symbol !== '(') {
       cursor = cursors.pop();
     }
 
