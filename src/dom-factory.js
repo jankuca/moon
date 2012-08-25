@@ -93,7 +93,7 @@ DOMFactory.prototype.compileTextNode_ = function (text) {
     // in the `moon:script` attribute of the parent element instead of
     // creating a placeholder comment pair.
     if (plain_parent) {
-      parent.setAttribute('moon:script', value);
+      parent.setAttribute('m:script', value);
       text.nodeValue = value.replace(/\{.+?\}/g, '');
       break;
     }
@@ -102,7 +102,7 @@ DOMFactory.prototype.compileTextNode_ = function (text) {
     text.nodeValue = value.substr(0, value.length - match[0].length);
     // `querySelector` in jsdom does not return the element for `[moon\\:script]`
     // if the attribute value is empty.
-    parent.setAttribute('moon:script', '!');
+    parent.setAttribute('m:script', '!');
 
     var frag = document.createDocumentFragment();
     // Create a placeholder comment pair such as

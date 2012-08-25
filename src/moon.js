@@ -40,7 +40,7 @@ moon.create = function (app_dir) {
   }
 
   app.widgets.push({
-    selector: '[moon\\:controller]',
+    selector: '[m\\:control]',
     factory: function (scope, root, script) {
       var factory = app.controller_factory;
       var controller = factory.create(script, scope, root);
@@ -49,7 +49,7 @@ moon.create = function (app_dir) {
   });
 
   app.widgets.push({
-    selector: '[moon\\:script]',
+    selector: '[m\\:script]',
     factory: function (scope, parent, script) {
       var widget = new moon.ScriptWidget(script, scope, parent);
       widget.update();
