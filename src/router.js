@@ -17,16 +17,16 @@ Router.prototype.handle = function (req, res) {
   var routes = this.routes;
   var found = Object.keys(routes).some(function (pattern) {
     if (pattern === pathname) {
-      var dom = routes[pattern];
-      var layout_dom = routes.$layout;
-      if (layout_dom) {
+      var view = routes[pattern];
+      var layout = routes.$layout;
+      if (layout) {
         var root_scope = new Scope();
         root_scope.$app = {};
-        root_scope.$view = dom;
+        root_scope.$view = view;
 
-        this.returnDOM_(req, res, layout_dom, root_scope);
+        this.returnView_(req, res, layout, root_scope);
       } else {
-        this.returnDOM_(req, res, dom);
+        this.returnView_(req, res, view);
       }
       return true;
     }
@@ -43,9 +43,10 @@ Router.prototype.handle = function (req, res) {
 };
 
 
-Router.prototype.returnDOM_ = function (req, res, dom, scope) {
+Router.prototype.returnView_ = function (req, res, view, scope) {
   scope = scope || {};
 
+  var dom = this.dom_factory.create(view);
   this.dom_factory.compile(dom, scope, function () {
     var html = dom.document.doctype + dom.document.innerHTML;
 
