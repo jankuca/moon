@@ -147,7 +147,10 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
   };
 
   var compileElement = function (element, scope) {
-    var matched = widgets.some(function (widget) {
+    var child_scope = scope;
+
+    var matched = false;
+    widgets.forEach(function (widget) {
       var selector = widget.selector;
       if (element.matchesSelector(selector)) {
         var exp;
@@ -171,11 +174,11 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
         self.compileElement_(element);
 
         // Widget can create their own sub-scopes.
-        var child_scope = instance.scope || scope;
+        child_scope = instance.scope || child_scope;
         // Continue the tree compilation in the correct scope.
         compileLevel(element, child_scope);
 
-        return true;
+        matched = true;
       }
     });
 
