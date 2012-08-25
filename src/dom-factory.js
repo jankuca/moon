@@ -4,23 +4,23 @@ var XPathResult = jsdom.dom.level3.core.XPathResult;
 
 
 var DOMFactory = function () {
-  this.jsdom_options_ = {
-    features: {
-      FetchExternalResources: false,
-      ProcessExternalResources: false,
-      MutationEvents: false,
-      QuerySelector: true
-    },
-    parser: HTMLParser
-  };
-
   this.widgets = [];
 };
 
 
-DOMFactory.prototype.create = function (view) {
-  var source = view();
-  var document = jsdom.jsdom(source, null, this.jsdom_options_);
+DOMFactory.jsdom_options_ = {
+  features: {
+    FetchExternalResources: false,
+    ProcessExternalResources: false,
+    MutationEvents: false,
+    QuerySelector: true
+  },
+  parser: HTMLParser
+};
+
+
+DOMFactory.create = function (source) {
+  var document = jsdom.jsdom(source, null, DOMFactory.jsdom_options_);
   var dom = document.createWindow();
   return dom;
 };
@@ -31,7 +31,9 @@ DOMFactory.prototype.compile = function (dom, scope, callback) {
 
   var sandbox_scope = Object.create(scope);
   sandbox_scope.$$fn = {
-    view: function (builder) { return builder(); }
+    view: function (dom) {
+      return dom.document.innerHTML;
+    }
   };
 
   this.compileElement_(document);

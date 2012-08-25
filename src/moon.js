@@ -70,9 +70,8 @@ if (!clientside) {
     }
 
     var contents = fs.readFileSync(filename, 'utf8');
-    module.exports = function () {
-      return contents;
-    };
+    var dom = moon.DOMFactory.create(contents);
+    module.exports = dom;
   };
 }
 
