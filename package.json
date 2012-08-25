@@ -4,7 +4,8 @@
   "main": "src/moon.js",
   "dependencies": {
     "htmlparser": "git://github.com/jankuca/node-htmlparser#v1.x",
-    "jsdom": "git://github.com/jankuca/jsdom#master"
+    "jsdom": "git://github.com/jankuca/jsdom#master",
+    "tokenizer": "0.1.x"
   },
   "devDependencies": {
     "mocha": "1.x.x"
