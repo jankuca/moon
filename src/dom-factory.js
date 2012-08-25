@@ -15,6 +15,7 @@ DOMFactory.jsdom_options_ = {
     MutationEvents: false,
     QuerySelector: true
   },
+  optionalClosing: true,
   parser: HTMLParser
 };
 
@@ -134,10 +135,8 @@ DOMFactory.prototype.compileTextNode_ = function (text) {
 
 
 DOMFactory.prototype.compileWidgets_ = function (node, scope) {
-  //var document = node.parentWindow.document;
   var self = this;
   var widgets = this.widgets;
-  var matchesSelector = node.parentWindow.document.matchesSelector;
 
   var compileLevel = function (parent, scope) {
     parent.childNodes.some(function (child) {
@@ -150,7 +149,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
   var compileElement = function (element, scope) {
     var matched = widgets.some(function (widget) {
       var selector = widget.selector;
-      if (matchesSelector.call(element, selector)) {
+      if (element.matchesSelector(selector)) {
         var exp;
         var captures = self.getSelectorCaptures_(selector);
         if (captures.length === 1) {
