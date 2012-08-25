@@ -99,13 +99,13 @@ Aside from one-way bindings, the view can have widgets bound to them. Such bindi
 
 The only widgets that are currently available out-of-the-box in the framework are *controller widgets.* They create their own child scopes (which inherit from their respective parent scopes).
 
-Controller constructors are invoked with the `new` keyword and are passed their child scopes and root elements (the elements to which are they bound).
+Controller constructors are invoked with the `new` keyword and are passed no arguments.
 
 ```js
 // app/controllers/my-controller.js
 
-var MyController = function (scope, root) {
-  scope.name = 'Jan Kuča';
+var MyController = function () {
+  this.$scope.name = 'Jan Kuča';
 };
 
 module.exports = MyController;

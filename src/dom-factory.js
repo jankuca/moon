@@ -184,7 +184,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
         self.compileElement_(element);
 
         // Widget can create their own sub-scopes.
-        child_scope = instance.scope || child_scope;
+        child_scope = instance.$scope || child_scope;
         // Continue the tree compilation in the correct scope.
         compileLevel(element, child_scope);
 

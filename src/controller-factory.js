@@ -16,7 +16,14 @@ ControllerFactory.prototype.create = function (name, parent_scope, root) {
   }
 
   var scope = Object.create(parent_scope);
-  var controller = this.ioc.create(Controller, scope, root);
+
+  var PreparedController = function () {};
+  PreparedController.prototype = Controller.prototype;
+
+  var controller = this.ioc.create(PreparedController);
+  controller.$scope = scope;
+  controller.$root = root;
+  Controller.call(controller);
   return controller;
 };
 
