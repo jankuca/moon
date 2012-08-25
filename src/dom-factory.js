@@ -162,7 +162,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
 
         // Create a widget.
         var factory = widget.factory;
-        var instance = factory(scope, element, exp);
+        var instance = factory(element, scope, exp);
         // Attach the widget object to the scope to have it receive
         // future updates.
         scope.$addWidget(instance);
