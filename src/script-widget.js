@@ -33,9 +33,9 @@ ScriptWidget.prototype.update = function () {
 
       // Create a `DocumentFragment` with the DIV's contents.
       var frag = document.createDocumentFragment();
-      div.childNodes.forEach(function (node) {
-        frag.appendChild(node);
-      });
+      while (div.firstChild) {
+        frag.appendChild(div.firstChild);
+      }
 
       var opening = item.opening;
       var node;

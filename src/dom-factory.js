@@ -151,7 +151,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
   var widgets = this.widgets;
 
   var compileLevel = function (parent, scope) {
-    parent.childNodes.some(function (child) {
+    parent.childNodes.forEach(function (child) {
       if (child.nodeType === child.ELEMENT_NODE) {
         compileElement(child, scope);
       }
