@@ -1,4 +1,3 @@
-var vm = require('vm');
 var ScriptCompiler = require('./script-compiler');
 
 

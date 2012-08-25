@@ -1,5 +1,6 @@
 var jsdom = require('jsdom');
 var HTMLParser = require('htmlparser');
+var KeyValueNotation = require('./key-value-notation');
 var XPathResult = jsdom.dom.level3.core.XPathResult;
 
 
@@ -50,7 +51,7 @@ DOMFactory.prototype.compileElement_ = function (node) {
   var compileNode = function (node) {
     switch (node.nodeType) {
     case node.ELEMENT_NODE:
-      //self.compileAttributes_(node);
+      self.compileAttributes_(node);
       compileLevel(node);
       break;
     case node.TEXT_NODE:
@@ -66,19 +67,30 @@ DOMFactory.prototype.compileElement_ = function (node) {
 };
 
 
-//DOMFactory.prototype.compileAttributes_ = function (element) {
-//  var rx = /\{(.+?)\}([\s\S]*)/g;
-//
-//  var attrs = element.attributes;
-//  for (var i = 0, ii = attrs.length; i < ii; ++i) {
-//    var name = attrs[i].name;
-//    var value = element.getAttribute(name);
-//
-//    if (value.match(rx)) {
-//      console.log('"' + value.replace(rx, '" + ($1) + "') + '"');
-//    }
-//  }
-//};
+DOMFactory.prototype.compileAttributes_ = function (element) {
+  var rx = /\{(.+?)\}([\s\S]*)/g;
+  var sources = {};
+
+  var attrs = element.attributes;
+  for (var i = 0, ii = attrs.length; i < ii; ++i) {
+    var name = attrs[i].name;
+    if (name !== 'm:script' && name !== 'm:attrs') {
+      var value = element.getAttribute(name);
+
+      if (value.match(rx)) {
+        sources[name] = value;
+        //var source = '"' + value.replace(rx, '" + ($1) + "') + '"';
+        //source = source.replace(/(^\s*""\s+\+\s*|\s*\+\s+""\s*$)/g, '');
+        //sources[name] = source;
+      }
+    }
+  }
+
+  if (Object.keys(sources).length > 0) {
+    var result = KeyValueNotation.stringify(sources);
+    element.setAttribute('m:attrs', result);
+  }
+};
 
 
 DOMFactory.prototype.compileTextNode_ = function (text) {

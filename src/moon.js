@@ -12,6 +12,7 @@ moon.IoCContainer = require('./ioc-container');
 moon.Router = require('./router');
 moon.Scope = require('./scope');
 moon.ScriptWidget = require('./script-widget');
+moon.ScriptAttributeWidget = require('./script-attribute-widget');
 moon.Server = require('./server');
 
 moon.inherits = require('util').inherits;
@@ -45,6 +46,15 @@ moon.create = function (app_dir) {
       var factory = app.controller_factory;
       var controller = factory.create(script, scope, root);
       return controller;
+    }
+  });
+
+  app.widgets.push({
+    selector: '[m\\:attrs]',
+    factory: function (element, scope, kvn) {
+      var widget = new moon.ScriptAttributeWidget(kvn, scope, element);
+      widget.update();
+      return widget;
     }
   });
 
