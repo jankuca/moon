@@ -47,6 +47,10 @@ The dependent component (the one requesting other instances) has to list its dep
 This list then contains names of the services (other components) that are desired to be provided by the IoC container.
 
 ```js
+var MyController = function (router) {
+  // router is available
+};
+
 MyController.prototype.$deps = [ '$router' ];
 ```
 
