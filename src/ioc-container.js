@@ -29,7 +29,6 @@ IoCContainer.prototype.create = function (Class /*, ...args */) {
   Dependant.prototype = Class.prototype;
 
   var instance = new Dependant();
-  instance.$$ioc = this;
   this.inject.apply(this, [ Class, instance ].concat(args));
 
   return instance;

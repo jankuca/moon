@@ -15,16 +15,6 @@ moon.ScriptWidget = require('./script-widget');
 moon.ScriptAttributeWidget = require('./script-attribute-widget');
 moon.Server = require('./server');
 
-moon.inherits = require('util').inherits;
-moon.base = function (Class, instance /*, ...args */) {
-  var args = Array.prototype.slice.call(arguments, 2);
-  var ioc = instance.$$ioc;
-  if (ioc) {
-    ioc.inject.apply(ioc, [ Class, instance ].concat(args));
-  } else {
-    Class.apply(instance, args);
-  }
-};
 
 moon.env = clientside ? {} : process.env;
 
