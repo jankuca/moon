@@ -38,6 +38,30 @@ This architecture has only been used on the client so far. moon.js brings it to 
 
 The CommonJS module system (which is implemented by node.js) has been proven to be a good choice. moon.js brings them to the client which allows for a seamless development of the application component.
 
+## Dependency Injection
+
+Components of the applications can request that instances of other components are passed to their constructors (constructor injection).
+
+The dependent component (the one requesting other instances) has to list its dependencies in its `$deps` property. As this list has to be known to the *injector* (the IoC container providing the dependent component with other instances) before the dependent component is instantiated, this list has to be specified on its `prototype`.
+
+This list then contains names of the services (other components) that are desired to be provided by the IoC container.
+
+```js
+MyController.prototype.$deps = [ '$router' ];
+```
+
+Currently, the only service available in the system out-of-the-box is `$app` which is the `Application` instance created by `moon.create`.
+
+Custom services can be added to the IoC container. You can either provide one instance that should get injected into other components directly or you can provide a factory (function) that returns an instance. In case of a factory, an instance is created when the first requested and it is then cached for future requests.
+
+```js
+app.ioc.addService('name', my_service);
+
+app.ioc.addService('name', function () {
+  return new MyService();
+});
+```
+
 
 # Getting started
 
