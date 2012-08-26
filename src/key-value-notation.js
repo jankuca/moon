@@ -6,7 +6,7 @@ var stringify = function (input) {
   case 'string':
     return "'" + input.replace(/'/g, "\\'") + "'";
   case 'number':
-    return input;
+    return String(input);
   case 'boolean':
     return (input ? 'true' : 'false');
   case 'undefined':
@@ -30,13 +30,18 @@ var parse = function (input) {
   var tokenizer = new Tokenizer();
   tokenizer.addRule(/^'([^']|\\')+':$/, 'key');
   tokenizer.addRule(/^'([^']|\\')*'$/, 'string');
-  tokenizer.addRule(/^'([^']|\\')*$/, 'maybe-string');
   tokenizer.addRule(/^\s+$/, 'whitespace');
-  tokenizer.addRule(/^\d+$/, 'number');
+  tokenizer.addRule(/^(\d*\.)?\d+$/, 'number');
   tokenizer.addRule(/^(true|false)$/, 'boolean');
   tokenizer.addRule(/^null$/, 'null');
   tokenizer.addRule(/^(\[|,|\])$/, 'symbol');
   tokenizer.addRule(/^;$/, 'terminator');
+
+  tokenizer.addRule(/^'([^']|\\')*$/, 'maybe-string');
+  tokenizer.addRule(/^\d*\.$/, 'maybe-number');
+  tokenizer.addRule(/^(t(r(ue?)?)?|f(a(l(se?)?)?)?)$/, 'maybe-boolean');
+  tokenizer.addRule(/^n(u(ll?)?)?$/, 'maybe-null');
+
 
   var result = [];
   var key = 0;
