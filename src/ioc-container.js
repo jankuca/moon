@@ -14,6 +14,14 @@ IoCContainer.prototype.getService = function (key) {
   return instance;
 };
 
+IoCContainer.prototype.addService = function (key, factory_or_instance) {
+  if (typeof factory_or_instance === 'function') {
+    this.factories_[key] = factory_or_instance;
+  } else {
+    this.instances_[key] = factory_or_instance;
+  }
+};
+
 /*
 IoCContainer.prototype.setServiceInstance = function (key, instance) {
   this.instances_[key] = instance;
