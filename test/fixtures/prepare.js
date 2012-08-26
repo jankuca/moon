@@ -13,8 +13,19 @@ global.include = function (file_path) {
   return require(file_path);
 };
 
-global.console.log = function () {};
-global.console.info = function () {};
-global.console.warn = function () {};
-global.console.error = function () {};
-global.console.trace = function () {};
+
+var createLogger = function (target) {
+  return function () {
+    var err = new Error();
+    var origin = err.stack.split("\n")[2];
+    if (/mocha/.test(origin)) {
+      target.apply(global.console, arguments);
+    }
+  };
+};
+
+global.console.log = createLogger(global.console.log);
+global.console.info = createLogger(global.console.info);
+global.console.warn = createLogger(global.console.warn);
+global.console.error = createLogger(global.console.error);
+global.console.trace = createLogger(global.console.trace);
