@@ -207,7 +207,7 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
 
 DOMFactory.prototype.getSelectorCaptures_ = function (selector) {
   var captures = [];
-  var rx = /\[([^=]+).*?\]/g;
+  var rx = /\[([^=\]]+)[^\]]*?\]/g;
   var match;
   while (match = rx.exec(selector)) {
     captures.push(match[1].replace(/\\/g, ''));
