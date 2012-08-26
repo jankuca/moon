@@ -22,49 +22,6 @@ IoCContainer.prototype.addService = function (key, factory_or_instance) {
   }
 };
 
-/*
-IoCContainer.prototype.setServiceInstance = function (key, instance) {
-  this.instances_[key] = instance;
-};
-
-IoCContainer.prototype.setServices = function (declaration) {
-  var self = this;
-  var factories = this.factories_;
-
-  var repositories = declaration['@repositories']
-  if (repositories) {
-    this.setRepositoryServices(repositories);
-    delete declaration['@repositories'];
-  }
-
-  Object.keys(declaration).forEach(function (key) {
-    factories[key] = function () {
-      options = declaration[key];
-      Class = options['class'];
-
-      service = self.create(Class, options);
-      return service;
-    };
-  });
-};
-
-IoCContainer.prototype.setRepositoryServices = function (declaration) {
-  var self = this;
-
-  Object.keys(repositories).forEach(function (key) {
-    factories[key] = function () {
-      var options = declaration[key];
-      var Class = options['class'] || EntityRepository;
-
-      var repository = this.create(Class, options);
-      repository.Entity = options['entity'] || Entity;
-      repository.ensureIndexes(options['indexes'] || []);
-      return repository;
-    };
-  });
-};
-*/
-
 IoCContainer.prototype.create = function (Class /*, ...args */) {
   var args = Array.prototype.slice.call(arguments, 1);
 
