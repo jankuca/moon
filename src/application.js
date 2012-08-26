@@ -11,6 +11,13 @@ var Application = function (dir) {
 };
 
 
+Application.prototype.view = function (name) {
+  var view_path = path.join(this.dir, 'views', name + '.view');
+  var view = require(view_path);
+  return view;
+};
+
+
 Application.prototype.run = function () {
   if (this.controller_factory) {
     this.controller_factory.controller_dir = path.join(this.dir, 'controllers');

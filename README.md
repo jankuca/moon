@@ -52,10 +52,10 @@ var path = require('path');
 var app = moon.create(path.resolve('./app'));
 
 app.router.routes = {
-  $layout: require('./app/views/layout.view'),
-  '/': require('./app/views/index.view'),
-  '/members': require('./app/views/member/index.view'),
-  '/posts': require('./app/views/post/index.view')
+  $layout: app.view('layout'),
+  '/': app.view('index'),
+  '/members': app.view('member/index'),
+  '/posts': app.view('post/index')
 };
 
 app.server.port = moon.env['PORT'] || 5000;
@@ -69,7 +69,7 @@ There is a special `$layout` key in the `routes` map that (if present) makes the
 
 ## Views
 
-View/template files have the extension `.view` and can be simply `require()`-ed once the `moon` module is loaded.
+View/template files are located at the `APP_DIR/views` directory by default and have the extension `.view`. They can be simply `require`-ed once the `moon` module is loaded. The preferred usage is however via the `app.view` method.
 
 Views are bound to lexical scopes that create a tree hierarchy. The hierarchy is formed using so called *widgets* (see below). The framework provides a *root scope* which includes important variables such as the location of generated client-side JavaScript code or the Application Cache manifest for offline capabilites.
 
