@@ -1,7 +1,7 @@
 var assert = require('assert');
-var KVN = require('../src/key-value-notation');
+var KVN = include('key-value-notation');
 var MockDocumentNode = require('./fixtures/mock-dom').MockDocumentNode;
-var ScriptAttributeWidget = require('../src/script-attribute-widget');
+var ScriptAttributeWidget = include('script-attribute-widget');
 
 
 describe('ScriptAttributeWidget', function () {

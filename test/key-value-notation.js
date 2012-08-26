@@ -1,5 +1,5 @@
 var assert = require('assert');
-var KVN = require('../src/key-value-notation');
+var KVN = include('key-value-notation');
 
 
 describe('KeyValueNotation', function () {

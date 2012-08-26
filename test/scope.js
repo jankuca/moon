@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Scope = require('../src/scope');
+var Scope = include('scope');
 
 
 describe('Scope', function () {

@@ -1,6 +1,6 @@
 var assert = require('assert');
 var EventEmitter = require('events').EventEmitter;
-var Server = require('../src/server');
+var Server = include('server');
 
 
 describe('Server', function () {

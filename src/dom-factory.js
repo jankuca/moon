@@ -33,7 +33,9 @@ DOMFactory.prototype.compile = function (dom, scope, callback) {
 
   var sandbox_scope = Object.create(scope);
   sandbox_scope.$$fn = {
-    view: function (builder) { return builder(); }
+    view: function (builder) {
+      return builder();
+    }
   };
 
   this.compileElement_(document);

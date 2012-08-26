@@ -1,5 +1,5 @@
 var assert = require('assert');
-var ScriptCompiler = require('../src/script-compiler');
+var ScriptCompiler = include('script-compiler');
 
 
 describe('ScriptCompiler', function () {

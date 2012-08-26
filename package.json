@@ -1,6 +1,6 @@
 {
   "name": "moon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "src/moon.js",
   "dependencies": {
     "htmlparser": "git://github.com/jankuca/node-htmlparser#v1.x",
@@ -11,6 +11,7 @@
     "mocha": "1.x.x"
   },
   "scripts": {
-    "test": "mocha test"
+    "coverage": "rm -rf src-cov;\njscoverage src src-cov;\nmocha -r test/fixtures/prepare -R html-cov test > coverage.html;\nopen coverage.html",
+    "test": "mocha -r test/fixtures/prepare test"
   }
 }

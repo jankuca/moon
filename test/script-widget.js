@@ -1,6 +1,6 @@
 var assert = require('assert');
 var MockDocumentNode = require('./fixtures/mock-dom').MockDocumentNode;
-var ScriptWidget = require('../src/script-widget');
+var ScriptWidget = include('script-widget');
 
 
 describe('ScriptAttributeWidget', function () {

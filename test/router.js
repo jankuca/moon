@@ -1,6 +1,6 @@
 var assert = require('assert');
 var http = require('http');
-var Router = require('../src/router');
+var Router = include('router');
 
 
 describe('Router', function () {

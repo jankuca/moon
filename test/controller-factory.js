@@ -1,6 +1,6 @@
 var assert = require('assert');
 var path = require('path');
-var ControllerFactory = require('../src/controller-factory');
+var ControllerFactory = include('controller-factory');
 
 
 describe('ControllerFactory', function () {

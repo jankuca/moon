@@ -1,5 +1,5 @@
 var assert = require('assert');
-var IoCContainer = require('../src/ioc-container.js');
+var IoCContainer = include('ioc-container.js');
 
 
 describe('IoCContainer', function () {

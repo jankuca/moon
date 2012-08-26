@@ -1,5 +1,5 @@
 var assert = require('assert');
-var DOMFactory = require('../src/dom-factory.js');
+var DOMFactory = include('dom-factory.js');
 
 
 describe('DOMFactory', function () {
