@@ -1,6 +1,6 @@
 {
   "name": "moon",
-  "version": "0.0.1a",
+  "version": "0.1.0",
   "main": "src/moon.js",
   "dependencies": {
     "htmlparser": "git://github.com/jankuca/node-htmlparser#v1.x",
