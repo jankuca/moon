@@ -2,6 +2,8 @@
 
 a view-driven node.js framework that generates the client side
 
+[![Build Status](https://secure.travis-ci.org/jankuca/moon.png)](http://travis-ci.org/jankuca/moon)
+
 Nowadays, there is a strong tendency to build two separate applications that interconnect via an API. While this structure is most definitely the best when it comes to providing users with the best experience, the work required for actually building such system is nearly doubled as the client-side code is usually a lot different from the server-side code.
 
 moon.js aims to have developers **write only one codebase which would work on both the server and the client.** This was unthinkable for a long time (except for maybe GWT) but with node.js being the new hotness, this goal has become to be reachable.
