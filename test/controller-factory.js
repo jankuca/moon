@@ -21,10 +21,19 @@ describe('ControllerFactory', function () {
   };
 
 
+  it('should not throw on a missing controller dir', function () {
+    var dirname = path.resolve(__dirname, './fixtures/controller-factory/missing');
+
+    var factory = new ControllerFactory(dirname);
+    factory.ioc = new MockIoCContainer();
+    factory.run();
+  });
+
+
   it('should instantiate a controller', function () {
     var factory = new ControllerFactory(dirname);
     factory.ioc = new MockIoCContainer();
-    factory.run()
+    factory.run();
 
     var scope = {};
     var controller = factory.create('TestController', scope, null);
@@ -34,7 +43,7 @@ describe('ControllerFactory', function () {
   it('should throw on a missing controller', function () {
     var factory = new ControllerFactory(dirname);
     factory.ioc = new MockIoCContainer();
-    factory.run()
+    factory.run();
 
     assert.throws(function () {
       var controller = factory.create('UnknownController', null, null);
@@ -45,7 +54,7 @@ describe('ControllerFactory', function () {
   it('should pre-populate controllers with $scope and $root member properties', function () {
     var factory = new ControllerFactory(dirname);
     factory.ioc = new MockIoCContainer();
-    factory.run()
+    factory.run();
 
     var scope = {};
     var root = {};
