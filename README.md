@@ -36,7 +36,7 @@ This architecture has only been used on the client so far. moon.js brings it to 
 
 ## CommonJS Modules
 
-The CommonJS module system (which is implemented by node.js) has been proven to be a good choice. moon.js brings them to the client which allows for a seamless development of the application component.
+The CommonJS module system (which is implemented by node.js) has been proven to be a good choice. moon.js brings it to the client which allows for a seamless development of application components.
 
 ## Dependency Injection
 
@@ -77,7 +77,8 @@ app.ioc.addService('name', function () {
 var moon = require('moon');
 var path = require('path');
 
-var app = moon.create(path.resolve('./app'));
+var APP_DIR = path.resolve(__dirname, './app');
+var app = moon.create(APP_DIR);
 
 app.router.routes = {
   $layout: app.view('layout'),
