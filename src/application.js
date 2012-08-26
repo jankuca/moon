@@ -4,6 +4,7 @@ var path = require('path');
 var Application = function (dir) {
   this.dir = dir;
 
+  this.ioc = null;
   this.router = null;
   this.server = null;
 
@@ -19,6 +20,12 @@ Application.prototype.view = function (name) {
 
 
 Application.prototype.run = function () {
+  if (!this.ioc) {
+    throw new Error('Missing an IoC container');
+  }
+
+  this.ioc.addService('$app', this);
+
   if (this.controller_factory) {
     this.controller_factory.controller_dir = path.join(this.dir, 'controllers');
     this.controller_factory.ioc = this.ioc;
