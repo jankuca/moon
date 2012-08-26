@@ -1,7 +1,9 @@
 
-var Server = function () {
+var Server = function (http_server) {
   this.port = 80;
   this.router = null;
+
+  this.http_server = http_server;
 };
 
 
@@ -9,10 +11,8 @@ Server.prototype.run = function () {
   var self = this;
 
   var domain = require('domain');
-  var http = require('http');
-  var http_server = http.createServer();
 
-  http_server.on('request', function (req, res) {
+  this.http_server.on('request', function (req, res) {
     var d = domain.create();
 
     d.on('error', function (err) {
@@ -42,7 +42,7 @@ Server.prototype.run = function () {
   });
 
   var port = this.port;
-  http_server.listen(port, function () {
+  this.http_server.listen(port, function () {
     console.log('The HTTP server is running on port %d.', port);
   });
 };

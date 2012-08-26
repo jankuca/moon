@@ -27,7 +27,10 @@ moon.create = function (app_dir) {
 
   if (!clientside) {
     app.dom_factory = new moon.DOMFactory();
-    app.server = new moon.Server();
+
+    var http = require('http');
+    var http_server = http.createServer();
+    app.server = new moon.Server(http_server);
   }
 
   app.widgets.push({
