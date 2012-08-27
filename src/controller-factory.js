@@ -9,7 +9,7 @@ var ControllerFactory = function (controller_dir) {
 };
 
 
-ControllerFactory.prototype.create = function (name, parent_scope, root) {
+ControllerFactory.prototype.create = function (name, parent_scope, element) {
   var Controller = this.controllers_[name];
   if (!Controller) {
     throw new Error('Unknown controller ' + name);
@@ -22,7 +22,7 @@ ControllerFactory.prototype.create = function (name, parent_scope, root) {
 
   var controller = this.ioc.create(PreparedController);
   controller.$scope = scope;
-  controller.$root = root;
+  controller.$element = element;
   this.ioc.inject(Controller, controller);
   return controller;
 };
