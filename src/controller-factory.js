@@ -30,7 +30,7 @@ ControllerFactory.prototype.create = function (name, parent_scope, element) {
 
 ControllerFactory.prototype.run = function () {
   var controllers = {};
-  var rx = /^@?[a-z][a-z0-9]*-controller\.[a-z0-9]+$/;
+  var rx = /^@?[a-z][a-z0-9-]*-controller\.[a-z0-9]+$/;
 
   try {
     var controller_dir = this.controller_dir;
