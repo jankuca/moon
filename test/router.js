@@ -7,6 +7,7 @@ describe('Router', function () {
 
   var MockDOMFactory = function (expected_view) {
     this._expected_view_ = expected_view;
+    this.root_scope = null;
   };
   MockDOMFactory.prototype.create = function (view) {
     assert.equal(view, this._expected_view_);
@@ -20,6 +21,7 @@ describe('Router', function () {
     }
   };
   MockDOMFactory.prototype.compile = function (dom, scope, callback) {
+    this.root_scope = scope;
     callback(this._rendering_);
   };
 
@@ -40,8 +42,23 @@ describe('Router', function () {
     this._body_ += data.toString('utf8');
   };
   MockResponse.prototype.end = function () {
-    assert.equal(this._body_, this._expected_body_);
+    if (this._expected_body_ !== null) {
+      assert.equal(this._body_, this._expected_body_);
+    }
     this.ended = true;
+  };
+
+
+  var mockRequest = function (router, method, url, status, view) {
+    var req = new http.IncomingMessage();
+    var res = new MockResponse(status, view ? view() : null);
+    req.method = method;
+    req.url = url;
+    router.dom_factory = new MockDOMFactory(view || null);
+    router.handle(req, res);
+
+    assert(res.got_head);
+    assert(res.ended);
   };
 
 
@@ -55,34 +72,45 @@ describe('Router', function () {
       '/b/c': bc
     };
 
-    var req1 = new http.IncomingMessage();
-    var res1 = new MockResponse(200, a());
-    req1.method = 'GET';
-    req1.url = '/a';
-    router.dom_factory = new MockDOMFactory(a);
-    router.handle(req1, res1);
+    mockRequest(router, 'GET', '/a', 200, a);
+    mockRequest(router, 'GET', '/a?b=c', 200, a);
+    mockRequest(router, 'GET', '/b/c', 200, bc);
+  });
 
-    var req2 = new http.IncomingMessage();
-    var res2 = new MockResponse(200, a());
-    req2.method = 'GET';
-    req2.url = '/a?b=c';
-    router.dom_factory = new MockDOMFactory(a);
-    router.handle(req2, res2);
+  it('should route to layout if set with $view in scope', function () {
+    var layout = function () { return 'layout'; };
+    var a = function () { return 'A'; };
 
-    var req3 = new http.IncomingMessage();
-    var res3 = new MockResponse(200, bc());
-    req3.method = 'GET';
-    req3.url = '/b/c';
-    router.dom_factory = new MockDOMFactory(bc);
-    router.handle(req3, res3);
+    var router = new Router();
+    router.routes = {
+      $layout: layout,
+      '/a': a
+    };
+
+    mockRequest(router, 'GET', '/a', 200, layout);
+
+    assert.equal(router.dom_factory.root_scope.$view, a);
+  });
 
 
-    assert(res1.got_head);
-    assert(res1.ended);
-    assert(res2.got_head);
-    assert(res2.ended);
-    assert(res3.got_head);
-    assert(res3.ended);
+  it('should route to views using structured routes', function () {
+    var a = function () { return 'A'; };
+    var bc = function () { return 'B/C'; };
+
+    var router = new Router();
+    router.routes = {
+      '/a': {
+        '/': a,
+        '/a': a,
+        '/b/c': bc
+      }
+    };
+
+    mockRequest(router, 'GET', '/a/a', 200, a);
+    mockRequest(router, 'GET', '/a/a?b=c', 200, a);
+    mockRequest(router, 'GET', '/a/b/c', 200, bc);
+    mockRequest(router, 'GET', '/a', 404);
+    mockRequest(router, 'GET', '/b/c', 404);
   });
 
 });
