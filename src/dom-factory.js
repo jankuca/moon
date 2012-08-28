@@ -178,15 +178,18 @@ DOMFactory.prototype.compileWidgets_ = function (node, scope) {
         // Create a widget.
         var factory = widget.factory;
         var instance = factory(element, scope, exp);
-        // Attach the widget object to the scope to have it receive
-        // future updates.
-        scope.$addWidget(instance);
 
         // Compile template scripts in the widget element.
         self.compileElement_(element);
 
-        // Widget can create their own sub-scopes.
-        child_scope = instance.$scope || child_scope;
+        if (instance) {
+          // Attach the widget object to the scope to have it receive
+          // future updates.
+          scope.$addWidget(instance);
+          // Widget can create their own sub-scopes.
+          child_scope = instance.$scope || child_scope;
+        }
+
         // Continue the tree compilation in the correct scope.
         compileLevel(element, child_scope);
 
