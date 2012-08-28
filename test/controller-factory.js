@@ -51,18 +51,18 @@ describe('ControllerFactory', function () {
   });
 
 
-  it('should pre-populate controllers with $scope and $root member properties', function () {
+  it('should pre-populate controllers with $scope and $element member properties', function () {
     var factory = new ControllerFactory(dirname);
     factory.ioc = new MockIoCContainer();
     factory.run();
 
     var scope = {};
-    var root = {};
-    var controller = factory.create('TestController', scope, root);
+    var element = {};
+    var controller = factory.create('TestController', scope, element);
 
     assert.equal(Object.getPrototypeOf(controller.$scope), scope,
       'Child scope does not inherit from the parent scope.');
-    assert.equal(controller.$root, root, '$root is not correctly set');
+    assert.equal(controller.$element, element, '$element is not correctly set');
   });
 
 });
