@@ -25,7 +25,7 @@ Router.prototype.handle = function (req, res) {
   };
 
   var walkRouteLevel = function (routes, prefix, layout) {
-    prefix = prefix || '';
+    prefix = (prefix === '/') ? '' : prefix || '';
     layout = routes.$layout || layout;
 
     for (var pattern in routes) {
@@ -42,7 +42,10 @@ Router.prototype.handle = function (req, res) {
         break;
       case 'object': // multi-level route
         if (matchesPrefix(pathname, pattern)) {
-          return walkRouteLevel(target, pattern, layout);
+          var found = walkRouteLevel(target, pattern, layout);
+          if (found) {
+            return true;
+          }
         }
         break;
       }

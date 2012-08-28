@@ -94,11 +94,15 @@ describe('Router', function () {
 
 
   it('should route to views using structured routes', function () {
+    var x = function () { return 'X'; };
     var a = function () { return 'A'; };
     var bc = function () { return 'B/C'; };
 
     var router = new Router();
     router.routes = {
+      '/': {
+        '/x': x
+      },
       '/a': {
         '/': a,
         '/a': a,
@@ -106,6 +110,7 @@ describe('Router', function () {
       }
     };
 
+    mockRequest(router, 'GET', '/x', 200, x);
     mockRequest(router, 'GET', '/a/a', 200, a);
     mockRequest(router, 'GET', '/a/a?b=c', 200, a);
     mockRequest(router, 'GET', '/a/b/c', 200, bc);
